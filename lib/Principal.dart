@@ -45,7 +45,6 @@ class _PrincipalState extends State<Principal> {
     }
   }
 
-  // Función para reproducir la primera canción de un álbum
   Future<void> _playFirstTrackOfAlbum(String albumId) async {
     try {
       final spotify = Provider.of<SpotifyApi>(context, listen: false);

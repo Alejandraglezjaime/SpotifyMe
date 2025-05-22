@@ -86,7 +86,58 @@ class SpotifyApi extends ChangeNotifier {
     }
   }
 
-  // Nueva función para obtener canciones de un álbum dado su id
+  Future<Map<String, dynamic>> search(String query) async {
+    await authenticate();
+
+    final url = Uri.parse(
+        'https://api.spotify.com/v1/search?q=$query&type=artist,album,track&limit=10');
+    final response = await http.get(url, headers: {
+      'Authorization': 'Bearer $_token',
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data; // contiene 'artists', 'albums', 'tracks'
+    } else {
+      throw Exception('Error en búsqueda');
+    }
+  }
+
+  // Obtener álbumes por artista
+  Future<List<dynamic>> getAlbumsByArtist(String artistId) async {
+    await authenticate();
+
+    final response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/artists/$artistId/albums?include_groups=album,single&market=MX&limit=20'),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['items'] as List<dynamic>;
+    } else {
+      throw Exception('Error al obtener álbumes del artista');
+    }
+  }
+
+// Obtener canciones más populares del artista
+  Future<List<dynamic>> getTopTracksByArtist(String artistId) async {
+    await authenticate();
+
+    final response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/artists/$artistId/top-tracks?market=MX'),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['tracks'] as List<dynamic>;
+    } else {
+      throw Exception('Error al obtener top tracks del artista');
+    }
+  }
+
+
   Future<List<dynamic>> getAlbumTracks(String albumId) async {
     await authenticate();
 

@@ -30,9 +30,11 @@ class _NavegacionState extends State<Navegacion> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Colors.purpleAccent,  // Color morado para botón seleccionado
+        unselectedItemColor: Colors.grey,        // Color gris para no seleccionados
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Principal'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscador'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
         ],
       ),
     );
