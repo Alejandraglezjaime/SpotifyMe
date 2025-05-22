@@ -12,6 +12,7 @@ class Principal extends StatefulWidget {
 
 class _PrincipalState extends State<Principal> {
   Future<List<dynamic>>? _newReleasesFuture;
+  Future<List<dynamic>>? _topArtistsFuture;  // Nueva Future para artistas
   Future<List<dynamic>>? _genresFuture;
   Future<List<dynamic>>? _songsByGenreFuture;
   String? _selectedGenre;
@@ -25,6 +26,7 @@ class _PrincipalState extends State<Principal> {
     super.initState();
     final spotify = Provider.of<SpotifyApi>(context, listen: false);
     _newReleasesFuture = spotify.getNewReleases();
+    _topArtistsFuture = spotify.getPopularArtists(); // Llama a método que obtenga artistas más escuchados
     _genresFuture = spotify.getGenres();
   }
 
@@ -36,9 +38,9 @@ class _PrincipalState extends State<Principal> {
     });
   }
 
-  Future<void> _openSpotifySong(String externalUrl) async {
-    final Uri url = Uri.parse(externalUrl);
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+  Future<void> _openSpotifyUrl(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Perdón, no se puede abrir Spotify')),
       );
@@ -53,7 +55,7 @@ class _PrincipalState extends State<Principal> {
         final firstTrack = tracks[0];
         final externalUrl = firstTrack['external_urls']['spotify'] ?? '';
         if (externalUrl.isNotEmpty) {
-          await _openSpotifySong(externalUrl);
+          await _openSpotifyUrl(externalUrl);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('No se pudo reproducir la canción del álbum')),
@@ -69,6 +71,69 @@ class _PrincipalState extends State<Principal> {
         SnackBar(content: Text('Error al reproducir álbum: $e')),
       );
     }
+  }
+
+  Widget _buildTopArtistsSection(List<dynamic> artists) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+         Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+          child: Text(
+            'Descubre nuevos artistas',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[400],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: artists.length,
+            itemBuilder: (context, index) {
+              final artist = artists[index];
+              final imageUrl = (artist['images'] as List).isNotEmpty
+                  ? artist['images'][0]['url']
+                  : null;
+              final name = artist['name'];
+              final externalUrl = artist['external_urls']['spotify'] ?? '';
+
+              return GestureDetector(
+                onTap: () => _openSpotifyUrl(externalUrl),
+                child: Container(
+                  width: 80,
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 35,
+                        backgroundImage: imageUrl != null
+                            ? NetworkImage(imageUrl)
+                            : null,
+                        backgroundColor: Colors.grey[800],
+                        child: imageUrl == null
+                            ? const Icon(Icons.person, size: 40, color: Colors.white70)
+                            : null,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildNewReleasesSection(List<dynamic> albums) {
@@ -96,7 +161,6 @@ class _PrincipalState extends State<Principal> {
               final imageUrl = album['images'][0]['url'];
               final name = album['name'];
               final artists = (album['artists'] as List).map((a) => a['name']).join(', ');
-              // Usamos album['id'] para buscar las canciones
               final albumId = album['id'];
 
               return GestureDetector(
@@ -245,7 +309,7 @@ class _PrincipalState extends State<Principal> {
               final externalUrl = song['external_urls']['spotify'] ?? '';
 
               return GestureDetector(
-                onTap: () => _openSpotifySong(externalUrl),
+                onTap: () => _openSpotifyUrl(externalUrl),
                 child: Container(
                   width: 160,
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -310,19 +374,17 @@ class _PrincipalState extends State<Principal> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6C43AB),
-        elevation: 2,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        toolbarHeight: 80,
-        title: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            'Explora nuevos generos',
-            style: TextStyle(
-              color: Color(0xFFB0AFC1),
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+        toolbarHeight: 100,
+        title: const Text(
+          'Bienvenid@',
+          style: TextStyle(
+            color: Color(0xFFB0AFC1),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
           ),
         ),
       ),
@@ -330,14 +392,35 @@ class _PrincipalState extends State<Principal> {
         child: Column(
           children: [
             FutureBuilder<List<dynamic>>(
+              future: _topArtistsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Error al cargar artistas'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No hay artistas para mostrar'));
+                } else {
+                  return _buildTopArtistsSection(snapshot.data!);
+                }
+              },
+            ),
+
+            FutureBuilder<List<dynamic>>(
               future: _newReleasesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircularProgressIndicator(),
-                      ));
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return const Center(child: Text('Error al cargar nuevos lanzamientos'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -347,8 +430,10 @@ class _PrincipalState extends State<Principal> {
                 }
               },
             ),
+
             _buildFixedGenreButtons(),
-            if (_selectedGenre != null)
+
+            if (_songsByGenreFuture != null)
               FutureBuilder<List<dynamic>>(
                 future: _songsByGenreFuture,
                 builder: (context, snapshot) {

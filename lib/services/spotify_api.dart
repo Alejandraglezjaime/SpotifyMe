@@ -86,6 +86,51 @@ class SpotifyApi extends ChangeNotifier {
     }
   }
 
+  Future<List<dynamic>> getPopularArtists({int limit = 50}) async {
+    //Nota no se puede agregar mas de 50 artistas ya que no se puede
+    await authenticate();
+
+    // Buscamos con query 'a' para obtener artistas comunes (puedes ajustar)
+    final url = 'https://api.spotify.com/v1/search?q=a&type=artist&limit=$limit';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['artists']['items'] as List<dynamic>;
+    } else {
+      throw Exception('Error al obtener artistas populares');
+    }
+  }
+
+
+  Future<List<dynamic>> getRandomPopularSongs({int limit = 50}) async {
+    await authenticate(); // tu método para obtener token válido
+
+    final query = 'a'; // letra común para traer muchas canciones
+    final url =
+        'https://api.spotify.com/v1/search?q=$query&type=track&limit=$limit';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final tracks = data['tracks']['items'] as List<dynamic>;
+
+      tracks.shuffle(); // mezcla la lista para aleatorizar
+      return tracks;
+    } else {
+      throw Exception('Error al obtener canciones: ${response.statusCode}');
+    }
+  }
+
+
   Future<Map<String, dynamic>> search(String query) async {
     await authenticate();
 
@@ -132,6 +177,7 @@ class SpotifyApi extends ChangeNotifier {
       throw Exception('Error al obtener canciones del álbum');
     }
   }
+
 
 
 // Obtener canciones más populares del artista

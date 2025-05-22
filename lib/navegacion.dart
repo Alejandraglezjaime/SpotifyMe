@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'principal.dart';
 import 'buscador.dart';
+import 'descubrimiento.dart';
 
 class Navegacion extends StatefulWidget {
   const Navegacion({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class _NavegacionState extends State<Navegacion> {
   static final List<Widget> _widgetOptions = <Widget>[
     const Principal(),
     const Buscador(),
+    const Descubrimiento(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,6 +37,8 @@ class _NavegacionState extends State<Navegacion> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Descubre'), // Nuevo botón
+
         ],
       ),
     );

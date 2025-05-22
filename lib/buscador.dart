@@ -406,9 +406,19 @@ class _BuscadorState extends State<Buscador> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buscador'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        backgroundColor: const Color(0xFF6C43AB),
+        toolbarHeight: 100,
+        title: const Text(
+          'Buscador',
+          style: TextStyle(
+            color: Color(0xFFB0AFC1),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
+        ),
       ),
       body: Column(
         children: [
