@@ -157,6 +157,7 @@ class _BuscadorState extends State<Buscador> {
         ],
 
         // ÁLBUMES DEL ARTISTA
+        // ÁLBUMES DEL ARTISTA
         if (_artistAlbums != null && _artistAlbums!.isNotEmpty) ...[
           const Text(
             'Álbumes del artista',
@@ -169,7 +170,7 @@ class _BuscadorState extends State<Buscador> {
               scrollDirection: Axis.horizontal,
               children: _artistAlbums!.map<Widget>((album) {
                 return GestureDetector(
-                  onTap: () => _openSpotifyUrl(album['external_urls']['spotify']),
+                  onTap: () => _playFirstTrackOfAlbum(album['id']), // <- CAMBIO AQUÍ
                   child: Container(
                     width: 160,
                     margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -187,8 +188,7 @@ class _BuscadorState extends State<Buscador> {
                     child: Column(
                       children: [
                         ClipRRect(
-                          borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(16)),
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                           child: (album['images'] as List).isNotEmpty
                               ? Image.network(
                             album['images'][0]['url'],
@@ -216,6 +216,7 @@ class _BuscadorState extends State<Buscador> {
           ),
           const Divider(),
         ],
+
 
         if (_artistTopTracks != null && _artistTopTracks!.isNotEmpty) ...[
           const Text(

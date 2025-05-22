@@ -17,7 +17,7 @@ class _PrincipalState extends State<Principal> {
   String? _selectedGenre;
 
   final List<String> _genreButtons = [
-    'Pop', 'Rock', 'Reggaeton', 'Rap', 'Trap', 'Hip Hop', 'Urbano', 'Banda', 'Salsa', 'K-POP', 'R&B', 'Country', 'Reggae',
+    'Pop', 'Rock', 'Reggaeton', 'Rap', 'Trap', 'Hip Hop', 'Urbano', 'Banda', 'Salsa', 'K-POP', 'R&B', 'Country', 'Reggae', 'argentine trap',
   ];
 
   @override
@@ -310,7 +310,7 @@ class _PrincipalState extends State<Principal> {
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4B0082),
+        backgroundColor: const Color(0xFF6C43AB),
         elevation: 2,
         centerTitle: true,
         toolbarHeight: 80,
