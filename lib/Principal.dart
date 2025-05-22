@@ -16,6 +16,10 @@ class _PrincipalState extends State<Principal> {
   Future<List<dynamic>>? _songsByGenreFuture;
   String? _selectedGenre;
 
+  final List<String> _genreButtons = [
+    'Pop', 'Rock', 'Reggaeton', 'Rap', 'Trap', 'Hip Hop', 'Urbano', 'Banda', 'Salsa', 'K-POP', 'R&B', 'Country', 'Reggae',];
+
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +40,7 @@ class _PrincipalState extends State<Principal> {
     final Uri url = Uri.parse(externalUrl);
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo abrir Spotify')),
+        const SnackBar(content: Text('Perdón, no se puede abrir Spotify')),
       );
     }
   }
@@ -45,10 +49,16 @@ class _PrincipalState extends State<Principal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Nuevos Lanzamientos',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+          child: Text(
+            'Nuevos lanzamientos',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[400],
+            ),
+          ),
         ),
         SizedBox(
           height: 300,
@@ -66,17 +76,47 @@ class _PrincipalState extends State<Principal> {
                 onTap: () => _openSpotifySong(externalUrl),
                 child: Container(
                   width: 180,
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1F1B24),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.6),
+                        blurRadius: 8,
+                        offset: const Offset(2, 4),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(imageUrl, width: 180, height: 180, fit: BoxFit.cover),
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                        child: Image.network(imageUrl, width: 180, height: 180, fit: BoxFit.cover),
+                      ),
                       const SizedBox(height: 8),
-                      Text(name,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(artists, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          artists,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -88,22 +128,30 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
-  Widget _buildGenresSection(List<dynamic> genres) {
+  Widget _buildFixedGenreButtons() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Géneros', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+          child: Text(
+            'Explorar por género',
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[400], // gris suave y lindo para modo oscuro
+            ),
+          ),
         ),
+
         SizedBox(
           height: 50,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: genres.length,
+            itemCount: _genreButtons.length,
             itemBuilder: (context, index) {
-              final genre = genres[index];
-              final isSelected = genre == _selectedGenre;
+              final genre = _genreButtons[index];
+              final isSelected = genre.toLowerCase() == _selectedGenre?.toLowerCase();
 
               return GestureDetector(
                 onTap: () => _onGenreSelected(genre),
@@ -111,14 +159,23 @@ class _PrincipalState extends State<Principal> {
                   margin: const EdgeInsets.symmetric(horizontal: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.green : Colors.grey[300],
+                    color: isSelected ? const Color(0xFFBB86FC) : Colors.grey[800],
                     borderRadius: BorderRadius.circular(20),
+                    boxShadow: isSelected
+                        ? [
+                      BoxShadow(
+                        color: Colors.purpleAccent.withOpacity(0.6),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                        : [],
                   ),
                   alignment: Alignment.center,
                   child: Text(
                     genre,
                     style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black,
+                      color: isSelected ? Colors.black : Colors.white70,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
@@ -135,7 +192,8 @@ class _PrincipalState extends State<Principal> {
     if (songs.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
-        child: Text('No se encontraron canciones para este género.'),
+        child: Text('No se encontraron canciones para este género.',
+            style: TextStyle(color: Colors.white70)),
       );
     }
 
@@ -144,30 +202,79 @@ class _PrincipalState extends State<Principal> {
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Canciones', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          child:
+          Text('Canciones', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
         ),
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: songs.length,
-          itemBuilder: (context, index) {
-            final song = songs[index];
-            final imageUrl = (song['album']['images'] as List).isNotEmpty
-                ? song['album']['images'][0]['url']
-                : null;
-            final name = song['name'];
-            final artists = (song['artists'] as List).map((a) => a['name']).join(', ');
-            final externalUrl = song['external_urls']['spotify'] ?? '';
+        SizedBox(
+          height: 250,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: songs.length,
+            itemBuilder: (context, index) {
+              final song = songs[index];
+              final imageUrl = (song['album']['images'] as List).isNotEmpty
+                  ? song['album']['images'][0]['url']
+                  : null;
+              final name = song['name'];
+              final artists = (song['artists'] as List).map((a) => a['name']).join(', ');
+              final externalUrl = song['external_urls']['spotify'] ?? '';
 
-            return ListTile(
-              leading: imageUrl != null
-                  ? Image.network(imageUrl, width: 50, height: 50, fit: BoxFit.cover)
-                  : const Icon(Icons.music_note),
-              title: Text(name),
-              subtitle: Text(artists),
-              onTap: () => _openSpotifySong(externalUrl),
-            );
-          },
+              return GestureDetector(
+                onTap: () => _openSpotifySong(externalUrl),
+                child: Container(
+                  width: 160,
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1F1B24),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.6),
+                        blurRadius: 8,
+                        offset: const Offset(2, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (imageUrl != null)
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                          child: Image.network(
+                            imageUrl,
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      else
+                        const Icon(Icons.music_note, size: 100, color: Colors.white70),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          artists,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white70),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -176,9 +283,27 @@ class _PrincipalState extends State<Principal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        title: const Text('Spotify Clone'),
+        backgroundColor: const Color(0xFF4B0082),
+        elevation: 2,
+        centerTitle: true,
+        toolbarHeight: 80, // altura mayor para más espacio arriba y abajo
+        title: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 12.0),
+          child: Text(
+            'DESCUBRE NUEVOS GENEROS',
+            style: TextStyle(
+              color: Color(0xFFB0AFC1),
+              fontWeight: FontWeight.w600,
+              fontSize: 30,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
       ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,57 +312,40 @@ class _PrincipalState extends State<Principal> {
               future: _newReleasesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator(color: Colors.purpleAccent));
                 } else if (snapshot.hasError) {
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Text('Error al cargar nuevos lanzamientos: ${snapshot.error}'),
+                    child: Text('Error al cargar nuevos lanzamientos: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.redAccent)),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Text('No hay nuevos lanzamientos disponibles.'),
+                    child: Text('No hay nuevos lanzamientos disponibles.', style: TextStyle(color: Colors.white70)),
                   );
                 }
 
                 return _buildNewReleasesSection(snapshot.data!);
               },
             ),
-            FutureBuilder<List<dynamic>>(
-              future: _genresFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const LinearProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text('Error al cargar géneros: ${snapshot.error}'),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('No hay géneros disponibles.'),
-                  );
-                }
-
-                return _buildGenresSection(snapshot.data!);
-              },
-            ),
+            _buildFixedGenreButtons(),
             if (_selectedGenre != null)
               FutureBuilder<List<dynamic>>(
                 future: _songsByGenreFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator(color: Colors.purpleAccent));
                   } else if (snapshot.hasError) {
                     return Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text('Error al cargar canciones: ${snapshot.error}'),
+                      child: Text('Error al cargar canciones: ${snapshot.error}',
+                          style: const TextStyle(color: Colors.redAccent)),
                     );
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Text('No hay canciones para este género.'),
+                      child: Text('No hay canciones para este género.', style: TextStyle(color: Colors.white70)),
                     );
                   }
 
