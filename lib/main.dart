@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:music_player_tutorial/Principal.dart';
 import 'package:provider/provider.dart';
-import 'Principal.dart';
 import 'services/spotify_api.dart';
+import 'navegacion.dart';
+import 'principal.dart'; // Importa aquí la pantalla Principal
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => SpotifyApi(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SpotifyApi>(
+          create: (_) => SpotifyApi(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -19,12 +23,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Spotify Clone',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const Principal(),
+      title: 'Tu App',
+      theme: ThemeData.dark(),
+      home: const Navegacion(),
     );
   }
 }
-
