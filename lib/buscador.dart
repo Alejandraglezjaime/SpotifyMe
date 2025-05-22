@@ -67,7 +67,26 @@ class _BuscadorState extends State<Buscador> {
   void _openSpotifyUrl(String url) async {
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo abrir Spotify')),
+      );
+    }
+  }
+
+  Future<void> _playFirstTrackOfAlbum(String albumId) async {
+    try {
+      final api = Provider.of<SpotifyApi>(context, listen: false);
+      final tracks = await api.getTracksByAlbum(albumId);
+      if (tracks.isNotEmpty) {
+        final firstTrackUrl = tracks[0]['external_urls']['spotify'];
+        _openSpotifyUrl(firstTrackUrl);
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error al reproducir la canción: $e';
+      });
     }
   }
 
@@ -77,7 +96,7 @@ class _BuscadorState extends State<Buscador> {
     }
 
     if (_searchResults == null) {
-      return const Center(child: Text('Ingresa lo que vas a buscar'));
+      return const Center(child: Text(' '));
     }
 
     return ListView(
@@ -125,13 +144,19 @@ class _BuscadorState extends State<Buscador> {
                     Text(' • Tipo: $type'),
                   ],
                 ),
-                onTap: () => _openSpotifyUrl(artist['external_urls']['spotify']),
+                onTap: () {
+                  // Al tocar un artista, reproducimos la primera canción del primer álbum (si existe)
+                  if (_artistAlbums != null && _artistAlbums!.isNotEmpty) {
+                    _playFirstTrackOfAlbum(_artistAlbums![0]['id']);
+                  }
+                },
               ),
             );
           }),
           const Divider(),
         ],
 
+        // ÁLBUMES DEL ARTISTA
         if (_artistAlbums != null && _artistAlbums!.isNotEmpty) ...[
           const Text(
             'Álbumes del artista',
@@ -162,8 +187,8 @@ class _BuscadorState extends State<Buscador> {
                     child: Column(
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                           child: (album['images'] as List).isNotEmpty
                               ? Image.network(
                             album['images'][0]['url'],
@@ -222,8 +247,8 @@ class _BuscadorState extends State<Buscador> {
                     child: Column(
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                           child: (track['album']['images'] as List).isNotEmpty
                               ? Image.network(
                             track['album']['images'][0]['url'],
@@ -262,7 +287,8 @@ class _BuscadorState extends State<Buscador> {
             height: 220,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: _searchResults!['albums']['items'].map<Widget>((album) {
+              children:
+              _searchResults!['albums']['items'].map<Widget>((album) {
                 return GestureDetector(
                   onTap: () => _openSpotifyUrl(album['external_urls']['spotify']),
                   child: Container(
@@ -282,8 +308,8 @@ class _BuscadorState extends State<Buscador> {
                     child: Column(
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                           child: (album['images'] as List).isNotEmpty
                               ? Image.network(
                             album['images'][0]['url'],
@@ -322,7 +348,8 @@ class _BuscadorState extends State<Buscador> {
             height: 220,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: _searchResults!['tracks']['items'].map<Widget>((track) {
+              children:
+              _searchResults!['tracks']['items'].map<Widget>((track) {
                 return GestureDetector(
                   onTap: () => _openSpotifyUrl(track['external_urls']['spotify']),
                   child: Container(
@@ -342,8 +369,8 @@ class _BuscadorState extends State<Buscador> {
                     child: Column(
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
+                          borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                           child: (track['album']['images'] as List).isNotEmpty
                               ? Image.network(
                             track['album']['images'][0]['url'],
@@ -374,68 +401,29 @@ class _BuscadorState extends State<Buscador> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4B0082),
-        elevation: 2,
+        title: const Text('Buscador'),
         centerTitle: true,
-        toolbarHeight: 80,
-        title: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(
-            'Buscador',
-            style: TextStyle(
-              color: Color(0xFFB0AFC1),
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        backgroundColor: const Color(0xFF6C43AB),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E0854),
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: TextField(
-                controller: _controller,
-                onSubmitted: (_) => _performSearch(),
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  hintText: 'Buscar artista, álbum o canción',
-                  hintStyle: TextStyle(color: Colors.grey[400]),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  suffixIcon: _controller.text.isNotEmpty
-                      ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.grey),
-                    onPressed: () {
-                      setState(() {
-                        _controller.clear();
-                        _searchResults = null;
-                        _artistAlbums = null;
-                        _artistTopTracks = null;
-                        _error = null;
-                      });
-                    },
-                  )
-                      : null,
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
+            padding: const EdgeInsets.all(12.0),
+            child: TextField(
+              controller: _controller,
+              onSubmitted: (_) => _performSearch(),
+              decoration: InputDecoration(
+                hintText: 'Buscar artista, álbum o canción',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: _performSearch,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
@@ -445,5 +433,4 @@ class _BuscadorState extends State<Buscador> {
       ),
     );
   }
-
 }

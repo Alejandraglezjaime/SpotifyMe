@@ -120,6 +120,20 @@ class SpotifyApi extends ChangeNotifier {
     }
   }
 
+  Future<List<dynamic>> getTracksByAlbum(String albumId) async {
+    final response = await http.get(Uri.parse('https://api.spotify.com/v1/albums/$albumId/tracks'), headers: {
+      'Authorization': 'Bearer $_token',
+    });
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['items'];
+    } else {
+      throw Exception('Error al obtener canciones del álbum');
+    }
+  }
+
+
 // Obtener canciones más populares del artista
   Future<List<dynamic>> getTopTracksByArtist(String artistId) async {
     await authenticate();
