@@ -17,8 +17,8 @@ class _PrincipalState extends State<Principal> {
   String? _selectedGenre;
 
   final List<String> _genreButtons = [
-    'Pop', 'Rock', 'Reggaeton', 'Rap', 'Trap', 'Hip Hop', 'Urbano', 'Banda', 'Salsa', 'K-POP', 'R&B', 'Country', 'Reggae',];
-
+    'Pop', 'Rock', 'Reggaeton', 'Rap', 'Trap', 'Hip Hop', 'Urbano', 'Banda', 'Salsa', 'K-POP', 'R&B', 'Country', 'Reggae',
+  ];
 
   @override
   void initState() {
@@ -41,6 +41,33 @@ class _PrincipalState extends State<Principal> {
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Perdón, no se puede abrir Spotify')),
+      );
+    }
+  }
+
+  // Función para reproducir la primera canción de un álbum
+  Future<void> _playFirstTrackOfAlbum(String albumId) async {
+    try {
+      final spotify = Provider.of<SpotifyApi>(context, listen: false);
+      final tracks = await spotify.getAlbumTracks(albumId);
+      if (tracks.isNotEmpty) {
+        final firstTrack = tracks[0];
+        final externalUrl = firstTrack['external_urls']['spotify'] ?? '';
+        if (externalUrl.isNotEmpty) {
+          await _openSpotifySong(externalUrl);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No se pudo reproducir la canción del álbum')),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Este álbum no tiene canciones disponibles')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al reproducir álbum: $e')),
       );
     }
   }
@@ -70,10 +97,11 @@ class _PrincipalState extends State<Principal> {
               final imageUrl = album['images'][0]['url'];
               final name = album['name'];
               final artists = (album['artists'] as List).map((a) => a['name']).join(', ');
-              final externalUrl = album['external_urls']['spotify'] ?? '';
+              // Usamos album['id'] para buscar las canciones
+              final albumId = album['id'];
 
               return GestureDetector(
-                onTap: () => _openSpotifySong(externalUrl),
+                onTap: () => _playFirstTrackOfAlbum(albumId),
                 child: Container(
                   width: 180,
                   margin: const EdgeInsets.symmetric(horizontal: 12),
@@ -139,11 +167,10 @@ class _PrincipalState extends State<Principal> {
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: Colors.grey[400], // gris suave y lindo para modo oscuro
+              color: Colors.grey[400],
             ),
           ),
         ),
-
         SizedBox(
           height: 50,
           child: ListView.builder(
@@ -202,8 +229,7 @@ class _PrincipalState extends State<Principal> {
       children: [
         const Padding(
           padding: EdgeInsets.all(8.0),
-          child:
-          Text('Canciones', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+          child: Text('Canciones', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
         ),
         SizedBox(
           height: 250,
@@ -288,45 +314,38 @@ class _PrincipalState extends State<Principal> {
         backgroundColor: const Color(0xFF4B0082),
         elevation: 2,
         centerTitle: true,
-        toolbarHeight: 80, // altura mayor para más espacio arriba y abajo
+        toolbarHeight: 80,
         title: const Padding(
           padding: EdgeInsets.symmetric(vertical: 12.0),
           child: Text(
-            'DESCUBRE NUEVOS GENEROS',
+            'Explora nuevos generos',
             style: TextStyle(
               color: Color(0xFFB0AFC1),
-              fontWeight: FontWeight.w600,
-              fontSize: 30,
-              letterSpacing: 1.2,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        foregroundColor: Colors.white,
       ),
-
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FutureBuilder<List<dynamic>>(
               future: _newReleasesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Colors.purpleAccent));
+                  return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      ));
                 } else if (snapshot.hasError) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text('Error al cargar nuevos lanzamientos: ${snapshot.error}',
-                        style: const TextStyle(color: Colors.redAccent)),
-                  );
+                  return const Center(child: Text('Error al cargar nuevos lanzamientos'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('No hay nuevos lanzamientos disponibles.', style: TextStyle(color: Colors.white70)),
-                  );
+                  return const Center(child: Text('No hay nuevos lanzamientos'));
+                } else {
+                  return _buildNewReleasesSection(snapshot.data!);
                 }
-
-                return _buildNewReleasesSection(snapshot.data!);
               },
             ),
             _buildFixedGenreButtons(),
@@ -335,21 +354,19 @@ class _PrincipalState extends State<Principal> {
                 future: _songsByGenreFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator(color: Colors.purpleAccent));
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text('Error al cargar canciones: ${snapshot.error}',
-                          style: const TextStyle(color: Colors.redAccent)),
-                    );
+                    return const Center(child: Text('Error al cargar canciones por género'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('No hay canciones para este género.', style: TextStyle(color: Colors.white70)),
-                    );
+                    return const Center(child: Text('No hay canciones para este género'));
+                  } else {
+                    return _buildSongsByGenreSection(snapshot.data!);
                   }
-
-                  return _buildSongsByGenreSection(snapshot.data!);
                 },
               ),
           ],

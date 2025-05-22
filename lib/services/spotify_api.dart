@@ -49,9 +49,6 @@ class SpotifyApi extends ChangeNotifier {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       final albums = data['albums']['items'] as List;
-
-      // Cada álbum ya incluye "external_urls" con url de Spotify,
-      // no es necesario llamar otra API para obtenerla
       return albums;
     } else {
       throw Exception('Error al obtener nuevos lanzamientos');
@@ -67,7 +64,7 @@ class SpotifyApi extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['genres'];
+      return data['genres'] as List<dynamic>;
     } else {
       throw Exception('Error fetching genres');
     }
@@ -83,9 +80,26 @@ class SpotifyApi extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data['tracks']['items'];
+      return data['tracks']['items'] as List<dynamic>;
     } else {
       throw Exception('Error fetching songs by genre');
+    }
+  }
+
+  // Nueva función para obtener canciones de un álbum dado su id
+  Future<List<dynamic>> getAlbumTracks(String albumId) async {
+    await authenticate();
+
+    final response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/albums/$albumId/tracks'),
+      headers: {'Authorization': 'Bearer $_token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['items'] as List<dynamic>;
+    } else {
+      throw Exception('Error al obtener canciones del álbum');
     }
   }
 }
