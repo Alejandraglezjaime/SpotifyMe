@@ -145,8 +145,7 @@ class _BuscadorState extends State<Buscador> {
                   ],
                 ),
                 onTap: () {
-                  // Al tocar un artista, reproducimos la primera canción del primer álbum (si existe)
-                  if (_artistAlbums != null && _artistAlbums!.isNotEmpty) {
+                   if (_artistAlbums != null && _artistAlbums!.isNotEmpty) {
                     _playFirstTrackOfAlbum(_artistAlbums![0]['id']);
                   }
                 },
@@ -156,8 +155,6 @@ class _BuscadorState extends State<Buscador> {
           const Divider(),
         ],
 
-        // ÁLBUMES DEL ARTISTA
-        // ÁLBUMES DEL ARTISTA
         if (_artistAlbums != null && _artistAlbums!.isNotEmpty) ...[
           const Text(
             'Álbumes del artista',
@@ -170,7 +167,7 @@ class _BuscadorState extends State<Buscador> {
               scrollDirection: Axis.horizontal,
               children: _artistAlbums!.map<Widget>((album) {
                 return GestureDetector(
-                  onTap: () => _playFirstTrackOfAlbum(album['id']), // <- CAMBIO AQUÍ
+                  onTap: () => _playFirstTrackOfAlbum(album['id']),
                   child: Container(
                     width: 160,
                     margin: const EdgeInsets.symmetric(horizontal: 8),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../services/spotify_api.dart';
+import '/services/spotify_api.dart';
 
 class Principal extends StatefulWidget {
   const Principal({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class Principal extends StatefulWidget {
 
 class _PrincipalState extends State<Principal> {
   Future<List<dynamic>>? _newReleasesFuture;
-  Future<List<dynamic>>? _topArtistsFuture;  // Nueva Future para artistas
+  Future<List<dynamic>>? _topArtistsFuture;
   Future<List<dynamic>>? _genresFuture;
   Future<List<dynamic>>? _songsByGenreFuture;
   String? _selectedGenre;
@@ -26,7 +26,7 @@ class _PrincipalState extends State<Principal> {
     super.initState();
     final spotify = Provider.of<SpotifyApi>(context, listen: false);
     _newReleasesFuture = spotify.getNewReleases();
-    _topArtistsFuture = spotify.getPopularArtists(); // Llama a método que obtenga artistas más escuchados
+    _topArtistsFuture = spotify.getPopularArtists();
     _genresFuture = spotify.getGenres();
   }
 

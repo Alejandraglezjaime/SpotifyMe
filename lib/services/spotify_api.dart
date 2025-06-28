@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class SpotifyApi extends ChangeNotifier {
-  final String clientId = '586f08f3893f4a32a908a6f412c014af';
-  final String clientSecret = '75a5e348ee55447abf1b7de3c2000a59';
+  final String clientId = 'clientId';
+  final String clientSecret = 'clientSecret';
 
   String? _token;
   DateTime? _tokenExpiry;
@@ -13,7 +13,6 @@ class SpotifyApi extends ChangeNotifier {
     if (_token != null &&
         _tokenExpiry != null &&
         DateTime.now().isBefore(_tokenExpiry!)) {
-      // Token aún válido
       return;
     }
 
@@ -90,7 +89,6 @@ class SpotifyApi extends ChangeNotifier {
     //Nota no se puede agregar mas de 50 artistas ya que no se puede
     await authenticate();
 
-    // Buscamos con query 'a' para obtener artistas comunes (puedes ajustar)
     final url = 'https://api.spotify.com/v1/search?q=a&type=artist&limit=$limit';
 
     final response = await http.get(
@@ -108,9 +106,9 @@ class SpotifyApi extends ChangeNotifier {
 
 
   Future<List<dynamic>> getRandomPopularSongs({int limit = 50}) async {
-    await authenticate(); // tu método para obtener token válido
+    await authenticate();
 
-    final query = 'a'; // letra común para traer muchas canciones
+    final query = 'a';
     final url =
         'https://api.spotify.com/v1/search?q=$query&type=track&limit=$limit';
 
@@ -123,7 +121,7 @@ class SpotifyApi extends ChangeNotifier {
       final data = json.decode(response.body);
       final tracks = data['tracks']['items'] as List<dynamic>;
 
-      tracks.shuffle(); // mezcla la lista para aleatorizar
+      tracks.shuffle();
       return tracks;
     } else {
       throw Exception('Error al obtener canciones: ${response.statusCode}');
@@ -142,13 +140,12 @@ class SpotifyApi extends ChangeNotifier {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      return data; // contiene 'artists', 'albums', 'tracks'
+      return data;
     } else {
       throw Exception('Error en búsqueda');
     }
   }
 
-  // Obtener álbumes por artista
   Future<List<dynamic>> getAlbumsByArtist(String artistId) async {
     await authenticate();
 
@@ -180,7 +177,6 @@ class SpotifyApi extends ChangeNotifier {
 
 
 
-// Obtener canciones más populares del artista
   Future<List<dynamic>> getTopTracksByArtist(String artistId) async {
     await authenticate();
 

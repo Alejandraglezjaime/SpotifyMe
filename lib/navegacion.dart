@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'principal.dart';
 import 'buscador.dart';
 import 'descubrimiento.dart';
+import 'perfil.dart';
 
 class Navegacion extends StatefulWidget {
   const Navegacion({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _NavegacionState extends State<Navegacion> {
     const Principal(),
     const Buscador(),
     const Descubrimiento(),
+    const Perfil(),
   ];
 
   void _onItemTapped(int index) {
@@ -32,12 +34,13 @@ class _NavegacionState extends State<Navegacion> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.purpleAccent,  // Color morado para botón seleccionado
-        unselectedItemColor: Colors.grey,        // Color gris para no seleccionados
+        selectedItemColor: Colors.purpleAccent,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Descubre'), // Nuevo botón
+          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Descubre'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
 
         ],
       ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-// Asumo que tienes un servicio SpotifyApi para manejar las llamadas
 import '/services/spotify_api.dart';
 
 class Descubrimiento extends StatefulWidget {
