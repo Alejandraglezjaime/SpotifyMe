@@ -20,8 +20,10 @@ Dividida en tres secciones clave:
 
 * **Explorar por género**: Ofrece botones de géneros como *pop, rock, reguetón*, entre otros. Al seleccionar uno, se muestran recomendaciones musicales correspondientes.
 
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/inicio.jpg?raw=true)
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/inicio2.jpg?raw=true)
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/inicio.jpg?raw=true" alt="index inicio principal" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/inicio2.jpg?raw=true" alt="index inicio principal 2" style="width: 45%;">
+</div>
 
 ### Pantalla de Búsqueda
 
@@ -40,9 +42,10 @@ Debajo de la ficha bibliografica, se muestran en forma de lista deslizable:
 * Sus álbumes (cada uno reproduce su primera canción al seleccionarlo)
 * Sus canciones más escuchadas
 
-
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/buscador.jpg?raw=true)
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/buscador2.jpg?raw=true)
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/buscador.jpg?raw=true" alt="index inicio principal" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/buscador2.jpg?raw=true" alt="index inicio principal 2" style="width: 45%;">
+</div>
 
 ###  Pantalla Descubre
 
@@ -58,7 +61,9 @@ Incluye dos botones:
 * Escuchar: Reproduce un fragmento de la canción.
 * Aleatorio: Filtra y muestra una nueva canción diferente.
 
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/descubre.jpg?raw=true)
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/descubre.jpg?raw=true" alt="index inicio principal" style="width: 45%;">
+</div>
 
 ###  Perfil de Usuario
 
@@ -70,7 +75,9 @@ Muestra los datos del usuario autenticado:
 
 Incluye un botón de **Cerrar sesión**, que redirige al usuario a la pantalla de inicio de sesión.
 
-![img inicio](https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/perfil.jpg?raw=true)
+<div style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/Img_git/perfil.jpg?raw=true" alt="index inicio principal" style="width: 45%;">
+</div>
 
 ## Funcionalidades por implementar
 
