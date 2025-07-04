@@ -39,7 +39,7 @@ class _NavegacionState extends State<Navegacion> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Descubre'),
+          BottomNavigationBarItem(icon: Icon(Icons.radio_outlined), label: 'Descubre'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
 
         ],
