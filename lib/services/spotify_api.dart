@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class SpotifyApi extends ChangeNotifier {
-  final String clientId = 'clientId';
-  final String clientSecret = 'clientSecret';
+  //final String clientId = 'clientId';
+  //final String clientSecret = 'clientSecret';
+
 
   String? _token;
   DateTime? _tokenExpiry;

@@ -379,7 +379,7 @@ class _PrincipalState extends State<Principal> {
         centerTitle: true,
         toolbarHeight: 100,
         title: const Text(
-          'Bienvenid@',
+          '¡¡ HOLAAA !!',
           style: TextStyle(
             color: Color(0xFFB0AFC1),
             fontSize: 24,
