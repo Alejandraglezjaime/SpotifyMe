@@ -14,18 +14,61 @@ class _LoginState extends State<Login> {
 
   bool _isLoading = false;
   String _errorMessage = '';
+  bool _isLoginMode = true;
 
-  Future<void> _login() async {
+  Future<void> _submit() async {
     setState(() {
       _isLoading = true;
       _errorMessage = '';
     });
 
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      if (_isLoginMode) {
+        // Intentar iniciar sesión
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(email: email, password: password);
+
+        User? user = userCredential.user;
+
+        if (user != null) {
+          // Refrescar estado para obtener emailVerified actualizado
+          await user.reload();
+          user = FirebaseAuth.instance.currentUser;
+
+          if (user != null && !user.emailVerified) {
+            await FirebaseAuth.instance.signOut();
+            setState(() {
+              _errorMessage =
+              'Por favor verifica tu correo antes de iniciar sesión.';
+            });
+            return;
+          }
+        }
+
+        // Aquí iría navegación a pantalla principal u otra lógica al iniciar sesión exitosamente
+
+      } else {
+        // Intentar registrar usuario
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+
+        User? user = userCredential.user;
+
+        if (user != null && !user.emailVerified) {
+          await user.sendEmailVerification();
+
+          setState(() {
+            _errorMessage =
+            'Se ha enviado un correo de verificación a $email. Por favor, verifica tu correo.';
+            _isLoginMode = true; // Volver a modo login
+          });
+
+          return;
+        }
+      }
     } on FirebaseAuthException catch (e) {
       String message;
 
@@ -42,8 +85,15 @@ class _LoginState extends State<Login> {
         case 'wrong-password':
           message = 'La contraseña es incorrecta.';
           break;
+        case 'email-already-in-use':
+          message = 'El correo ya está registrado.';
+          break;
+        case 'weak-password':
+          message = 'La contraseña es muy débil.';
+          break;
         case 'too-many-requests':
-          message = 'Solo se puede intentar una vez. Intenta con otro correo o vuelve en 10 minutos.';
+          message =
+          'Solo se puede intentar una vez. Intenta con otro correo o vuelve en 10 minutos.';
           break;
         default:
           message = 'Error inesperado: ${e.message}';
@@ -81,6 +131,29 @@ class _LoginState extends State<Login> {
     }
   }
 
+  void _toggleMode() {
+    setState(() {
+      _isLoginMode = !_isLoginMode;
+      _errorMessage = '';
+    });
+  }
+
+  Future<void> _resendVerificationEmail() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      try {
+        await user.sendEmailVerification();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Correo de verificación reenviado.')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al reenviar correo: $e')),
+        );
+      }
+    }
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -99,9 +172,11 @@ class _LoginState extends State<Login> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Card(
             elevation: 8,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              padding:
+              const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -122,13 +197,23 @@ class _LoginState extends State<Login> {
                   ),
                   const SizedBox(height: 32),
 
+                  Text(
+                    _isLoginMode ? 'Iniciar sesión' : 'Crear cuenta',
+                    style: theme.textTheme.headlineLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
                   TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.email),
                       labelText: 'Correo electrónico',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -139,7 +224,8 @@ class _LoginState extends State<Login> {
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.lock),
                       labelText: 'Contraseña',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -148,22 +234,47 @@ class _LoginState extends State<Login> {
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: _isLoading ? null : _login,
+                      onPressed: _isLoading ? null : _submit,
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('Iniciar sesión', style: TextStyle(fontSize: 16)),
+                          : Text(
+                        _isLoginMode ? 'Iniciar sesión' : 'Registrarse',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 16),
 
                   if (_errorMessage.isNotEmpty)
                     Text(
                       _errorMessage,
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.error),
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.error),
                       textAlign: TextAlign.center,
+                    ),
+
+                  const SizedBox(height: 24),
+
+                  TextButton(
+                    onPressed: _isLoading ? null : _toggleMode,
+                    child: Text(
+                      _isLoginMode
+                          ? '¿No tienes cuenta? Crear una'
+                          : '¿Ya tienes cuenta? Iniciar sesión',
+                      style: theme.textTheme.bodyMedium
+                          ?.copyWith(color: theme.colorScheme.primary),
+                    ),
+                  ),
+
+                  if (_errorMessage.contains('verificación'))
+                    TextButton(
+                      onPressed: _resendVerificationEmail,
+                      child: const Text('Reenviar correo de verificación'),
                     ),
                 ],
               ),
