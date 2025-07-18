@@ -81,6 +81,7 @@ Incluye un botón de **Cerrar sesión**, que redirige al usuario a la pantalla d
 
 ## Funcionalidades por implementar
 
-* [ ] Permitir la creación de nuevas cuentas directamente desde la app.
+* [ x ] Permitir la creación de nuevas cuentas directamente desde la app.
 * [ ] Permitir que el usuario agregue una imagen de perfil.
 * [ ] Incorporar mayor personalización e interactividad en la experiencia del usuario dentro de la app.
+* [ ] Que el usuario pueda recuperar su contraseña si se le olvida
