@@ -1,86 +1,85 @@
 # SpotifyMe
 
-SpotifyMe is a mobile application for Android designed to provide a personalized and distinctive experience for music exploration and discovery.
+SpotifyMe es una aplicación móvil para Android diseñada para brindar una experiencia personalizada y diferenciada en la exploración y descubrimiento de música.
 
-The platform incorporates a **user authentication system** that ensures exclusive access to registered accounts via **email and password**, securely managed through **Firebase Authentication**.
+La plataforma incorpora un sistema de **autenticación de usuarios** que garantiza el acceso exclusivo a cuentas registradas mediante **correo electrónico y contraseña**, gestionadas de manera segura a través de **Firebase Authentication**.
 
-The app allows new user registration, login with registered credentials, as well as password recovery through an automated process that sends an email to reset the access password (functionality currently under development).
+La aplicación permite la creación de nuevos usuarios, el inicio de sesión con credenciales registradas, así como la recuperación de contraseña mediante un proceso automatizado que envía un correo electrónico para restablecer la clave de acceso (funcionalidad actualmente en desarrollo).
 
 <div style="display: flex; justify-content: space-between;">
     <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/login.jpg?raw=true" alt="login" style="width: 45%;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/crearCuenta.jpg?raw=true" alt="create account" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/crearCuenta.jpg?raw=true" alt="crear cuenta" style="width: 45%;">
 </div>
 
-SpotifyMe integrates with the official Spotify API to provide up-to-date information about artists, albums, songs, and recent releases. Additionally, it enables music playback by redirecting directly to the official Spotify app, ensuring a smooth and familiar user experience.
+SpotifyMe se integra con la API oficial de Spotify para ofrecer información actualizada sobre artistas, álbumes, canciones y lanzamientos recientes. Asimismo, permite la reproducción de música mediante la redirección directa a la aplicación oficial de Spotify, garantizando una experiencia fluida y familiar para el usuario.
 
-The application consists of five main screens, each designed to optimize user interaction with musical content:
+La aplicación está compuesta por cinco pantallas principales, cada una diseñada para optimizar la interacción del usuario con el contenido musical:
 
-### Home Screen
+### Pantalla de Inicio
 
-This screen is organized into three main sections:
+Esta pantalla está organizada en tres secciones principales:
 
-* **Discover New Artists**: Displays a gallery of 50 featured artists, showing their name and image. When selecting any artist, the user is redirected to their profile within the official Spotify app.
+* **Descubre nuevos artistas**: Presenta una galería con 50 artistas destacados, mostrando su nombre e imagen. Al seleccionar cualquiera de ellos, el usuario es redirigido a su perfil dentro de la aplicación oficial de Spotify.
 
-* **New Releases**: Shows the latest musical releases objectively, without algorithmic personalization.
+* **Nuevos lanzamientos**: Muestra los estrenos musicales más recientes de manera objetiva, sin personalización algorítmica.
 
-* **Explore by Genre**: Offers buttons for different musical genres such as *pop*, *rock*, and *reggaeton*. Selecting a genre displays specific recommendations.
+* **Explorar por género**: Ofrece botones con distintos géneros musicales, como *pop*, *rock* y *reguetón*. Al seleccionar un género, se despliegan recomendaciones específicas.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/inicio1.jpg?raw=true" alt="Home Screen - Section 1" style="width: 45%;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/inicio2.jpg?raw=true" alt="Home Screen - Section 2" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/inicio1.jpg?raw=true" alt="Pantalla de Inicio - Sección 1" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/inicio2.jpg?raw=true" alt="Pantalla de Inicio - Sección 2" style="width: 45%;">
 </div>
 
-### Search Screen
+### Pantalla de Búsqueda
 
-This interface allows the user to search for artists and view their complete profile, which includes:
+Esta interfaz permite al usuario buscar artistas y visualizar su perfil completo, que incluye:
 
-* Artist image
-* Popularity level
-* Number of followers
-* Artist type
-* Musical genre
+* Imagen del artista
+* Nivel de popularidad
+* Número de seguidores
+* Tipo de artista
+* Género musical
 
-Selecting an artist automatically plays the first song from their most recent album. Below the profile, scrollable lists display:
+Al seleccionar un artista, se reproduce automáticamente la primera canción de su álbum más reciente. Debajo del perfil, se despliegan listas deslizables con:
 
-* Artist's albums (each allows playing its first song upon selection)
-* Artist's most popular songs
+* Álbumes del artista (cada uno permite reproducir su primera canción al ser seleccionado)
+* Canciones más populares del artista
 
-Additionally, each song and album includes a heart-shaped button that allows saving the content to the Favorites section for quick and personalized access.
+Adicionalmente, cada canción y álbum incluye un botón en forma de corazón que permite guardar el contenido en la sección de Favoritos para un acceso rápido y personalizado.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/buscador1.jpg?raw=true" alt="Search Screen - Artist Profile" style="width: 45%;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/buscador2.jpg?raw=true" alt="Search Screen - Albums and Songs List" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/buscador1.jpg?raw=true" alt="Pantalla de Búsqueda - Perfil Artista" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/buscador2.jpg?raw=true" alt="Pantalla de Búsqueda - Listado de Álbumes y Canciones" style="width: 45%;">
 </div>
 
-### Discover and Favorites Screen
+### Pantalla Descubre y Favoritos
 
-* **Discover**: Displays a random song with relevant information such as image, name, popularity, and artist. Includes two buttons:
+* **Descubre**: Presenta una canción aleatoria con información relevante como imagen, nombre, popularidad y artista. Incluye dos botones:
 
-  * *Listen*: Plays a snippet of the song.
-  * *Random*: Generates and displays a new different song.
+  * *Escuchar*: Reproduce un fragmento de la canción.
+  * *Aleatorio*: Genera y muestra una nueva canción distinta.
 
-* **Favorites**: Shows a list of songs and albums saved by the user, presenting the image, artist, and content type. It also allows deleting items from the list based on user preference.
+* **Favoritos**: Muestra una lista con las canciones y álbumes guardados por el usuario, presentando la imagen, artista y tipo de contenido. También permite eliminar elementos de la lista según la preferencia del usuario.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/descubre.jpg?raw=true" alt="Discover Screen" style="width: 45%;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/fav.jpg?raw=true" alt="Favorites Screen" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/descubre.jpg?raw=true" alt="descubre" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/fav.jpg?raw=true" alt="Favoritos" style="width: 45%;">
 </div>
 
-### User Profile
+### Perfil de Usuario
 
-This section displays the authenticated user's information:
+Esta sección despliega la información del usuario autenticado:
 
-* Profile image (or initial of the name if no image has been uploaded)
-* Full name
-* Email address
+* Imagen de perfil (o inicial del nombre si no se ha cargado una imagen)
+* Nombre completo
+* Correo electrónico
 
-Additionally, it features a **Log Out** button that redirects the user to the login screen.
+Además, cuenta con un botón para **Cerrar sesión**, que redirige a la pantalla de inicio de sesión.
 
 <div style="display: flex; justify-content: space-between;">
-    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/perfil.jpg?raw=true" alt="User Profile" style="width: 45%;">
+    <img src="https://github.com/Alejandraglezjaime/SpotifyMe/blob/main/assetsReadme/perfil.jpg?raw=true" alt="Perfil de Usuario" style="width: 45%;">
 </div>
 
-## Features to Implement
+## Funcionalidades por implementar
 
-- [  ] Enable the password recovery email to allow users to actually reset their password, not just receive an informational email.
-
+* [  ] Que el correo que le llega al usuario si le permita cambiar la contraseña y no solo sea un correo  
