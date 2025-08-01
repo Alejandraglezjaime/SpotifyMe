@@ -65,9 +65,13 @@ class _DescubrimientoState extends State<Descubrimiento> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF121212), Color(0xFF1F1B2E)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF6A0572),
+              Color(0xFFC72C39),
+              Color(0xFF6A0572),
+            ],
           ),
         ),
         child: Column(

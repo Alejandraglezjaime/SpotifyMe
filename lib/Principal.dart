@@ -1,4 +1,8 @@
+import 'dart:ui';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '/services/spotify_api.dart';
@@ -73,21 +77,38 @@ class _PrincipalState extends State<Principal> {
     }
   }
 
+  // Nuevos artistas
   Widget _buildTopArtistsSection(List<dynamic> artists) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-         Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
-          child: Text(
-            'Descubre nuevos artistas',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[400],
-            ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.star,
+                color: Colors.grey[400],
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Descubre nuevos artistas ',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[400],
+                ),
+              ),
+              Icon(
+                Icons.star,
+                color: Colors.grey[400],
+                size: 24,
+              ),
+            ],
           ),
         ),
+
         SizedBox(
           height: 100,
           child: ListView.builder(
@@ -136,19 +157,35 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+  // Nuevos lanzamientos
   Widget _buildNewReleasesSection(List<dynamic> albums) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
-          child: Text(
-            'Nuevos lanzamientos',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[400],
-            ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.whatshot,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Nuevos lanzamientos ',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[400],
+                ),
+              ),
+              Icon(
+                Icons.whatshot,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+            ],
           ),
         ),
         SizedBox(
@@ -168,105 +205,53 @@ class _PrincipalState extends State<Principal> {
                 child: Container(
                   width: 180,
                   margin: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1F1B24),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 8,
-                        offset: const Offset(2, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        child: Image.network(imageUrl, width: 180, height: 180, fit: BoxFit.cover),
-                      ),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(46, 8, 84, 0.4),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                              child: Image.network(
+                                imageUrl,
+                                width: 180,
+                                height: 180,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                artists,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          artists,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFixedGenreButtons() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
-          child: Text(
-            'Explorar por género',
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[400],
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 50,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: _genreButtons.length,
-            itemBuilder: (context, index) {
-              final genre = _genreButtons[index];
-              final isSelected = genre.toLowerCase() == _selectedGenre?.toLowerCase();
-
-              return GestureDetector(
-                onTap: () => _onGenreSelected(genre),
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFFBB86FC) : Colors.grey[800],
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: isSelected
-                        ? [
-                      BoxShadow(
-                        color: Colors.purpleAccent.withOpacity(0.6),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ]
-                        : [],
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    genre,
-                    style: TextStyle(
-                      color: isSelected ? Colors.black : Colors.white70,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -278,21 +263,128 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+  // Explorar por genero botones
+  Widget _buildFixedGenreButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12.0),
+          child: Row(
+            children: [
+              Icon(
+                Icons.flash_on,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Explora por género',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[400],
+                ),
+              ),
+              Icon(
+                Icons.flash_on,
+                color: Colors.grey[400],
+                size: 20,
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 60,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _genreButtons.length,
+            itemBuilder: (context, index) {
+              final genre = _genreButtons[index];
+              final isSelected = genre.toLowerCase() == _selectedGenre?.toLowerCase();
+
+              return GestureDetector(
+                onTap: () => _onGenreSelected(genre),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: isSelected
+                        ? LinearGradient(
+                      colors: [
+                        Colors.purpleAccent.withOpacity(0.3),
+                        Colors.deepPurple.withOpacity(0.4),
+                      ],
+                    )
+                        : LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.1),
+                        Colors.white.withOpacity(0.05),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: isSelected ? Colors.purpleAccent : Colors.white24,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                      child: Center(
+                        child: Text(
+                          genre,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.white70,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 30),
+      ],
+    );
+  }
+
+  // Canciones
   Widget _buildSongsByGenreSection(List<dynamic> songs) {
     if (songs.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(8.0),
-        child: Text('No se encontraron canciones para este género.',
-            style: TextStyle(color: Colors.white70)),
+        child: Text(
+          'No se encontraron canciones para este género.',
+          style: TextStyle(color: Colors.white70),
+        ),
       );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Canciones', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+          child: Row(
+            children: [
+              SizedBox(width: 8),
+              Text(
+                'Canciones',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[400],
+                ),
+              ),
+            ],
+          ),
         ),
         SizedBox(
           height: 250,
@@ -313,52 +405,57 @@ class _PrincipalState extends State<Principal> {
                 child: Container(
                   width: 160,
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1F1B24),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.6),
-                        blurRadius: 8,
-                        offset: const Offset(2, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (imageUrl != null)
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                          child: Image.network(
-                            imageUrl,
-                            width: 160,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      else
-                        const Icon(Icons.music_note, size: 100, color: Colors.white70),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(46, 8, 84, 0.4),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (imageUrl != null)
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                                child: Image.network(
+                                  imageUrl,
+                                  width: 160,
+                                  height: 160,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            else
+                              const Icon(Icons.music_note, size: 100, color: Colors.white70),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                artists,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          artists,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               );
@@ -369,93 +466,118 @@ class _PrincipalState extends State<Principal> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        toolbarHeight: 100,
-        title: const Text(
-          '¡¡ HOLAAA !!',
-          style: TextStyle(
-            color: Color(0xFFB0AFC1),
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(0xFF6A0572),
+                Color(0xFFC72C39),
+                Color(0xFF6A0572),
+              ],
+            ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder<List<dynamic>>(
-              future: _topArtistsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error al cargar artistas'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No hay artistas para mostrar'));
-                } else {
-                  return _buildTopArtistsSection(snapshot.data!);
-                }
-              },
-            ),
-
-            FutureBuilder<List<dynamic>>(
-              future: _newReleasesFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error al cargar nuevos lanzamientos'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No hay nuevos lanzamientos'));
-                } else {
-                  return _buildNewReleasesSection(snapshot.data!);
-                }
-              },
-            ),
-
-            _buildFixedGenreButtons(),
-
-            if (_songsByGenreFuture != null)
-              FutureBuilder<List<dynamic>>(
-                future: _songsByGenreFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20.0),
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Center(child: Text('Error al cargar canciones por género'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('No hay canciones para este género'));
-                  } else {
-                    return _buildSongsByGenreSection(snapshot.data!);
-                  }
-                },
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            toolbarHeight: 100,
+            title: SizedBox(
+              height: 50,
+              child: DefaultTextStyle(
+                style: GoogleFonts.poppins(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                child: AnimatedTextKit(
+                  repeatForever: true,
+                  animatedTexts: [
+                    FadeAnimatedText('Hola de nuevo'),
+                    FadeAnimatedText('Descubre algo nuevo'),
+                  ],
+                ),
               ),
-          ],
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                FutureBuilder<List<dynamic>>(
+                  future: _topArtistsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('Error al cargar artistas'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No hay artistas para mostrar'));
+                    } else {
+                      return _buildTopArtistsSection(snapshot.data!);
+                    }
+                  },
+                ),
+                FutureBuilder<List<dynamic>>(
+                  future: _newReleasesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('Error al cargar nuevos lanzamientos'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(child: Text('No hay nuevos lanzamientos'));
+                    } else {
+                      return _buildNewReleasesSection(snapshot.data!);
+                    }
+                  },
+                ),
+                _buildFixedGenreButtons(),
+                if (_songsByGenreFuture != null)
+                  FutureBuilder<List<dynamic>>(
+                    future: _songsByGenreFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return const Center(child: Text('Error al cargar canciones por género'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No hay canciones para este género'));
+                      } else {
+                        return _buildSongsByGenreSection(snapshot.data!);
+                      }
+                    },
+                  ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
+
+
 }

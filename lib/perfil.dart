@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -86,7 +87,8 @@ class _PerfilState extends State<Perfil> {
                 if (nuevoNombre.isNotEmpty) {
                   final user = FirebaseAuth.instance.currentUser;
                   if (user != null) {
-                    final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+                    final docRef =
+                    FirebaseFirestore.instance.collection('users').doc(user.uid);
                     await docRef.update({'name': nuevoNombre});
                     setState(() {
                       name = nuevoNombre;
@@ -138,91 +140,100 @@ class _PerfilState extends State<Perfil> {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
-              theme.colorScheme.primary.withOpacity(0.2),
-              theme.colorScheme.background,
+              Color(0xFF6A0572),
+              Color(0xFFC72C39),
+              Color(0xFF6A0572),
             ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Card(
-              elevation: 12,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: theme.colorScheme.primary,
-                      backgroundImage:
-                      photoUrl != null ? NetworkImage(photoUrl!) : null,
-                      child: photoUrl == null
-                          ? Text(
-                        name.substring(0, 1).toUpperCase(),
-                        style: theme.textTheme.headlineMedium
-                            ?.copyWith(color: Colors.white),
-                      )
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      name,
-                      style: theme.textTheme.headlineSmall
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Correo registrado:',
-                      style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      email,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _mostrarDialogoEditarNombre,
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Editar nombre'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6A1B9A),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15), // ← fondo translúcido
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: theme.colorScheme.primary,
+                        backgroundImage:
+                        photoUrl != null ? NetworkImage(photoUrl!) : null,
+                        child: photoUrl == null
+                            ? Text(
+                          name.substring(0, 1).toUpperCase(),
+                          style: theme.textTheme.headlineMedium
+                              ?.copyWith(color: Colors.white),
+                        )
+                            : null,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        name,
+                        style: theme.textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Correo registrado:',
+                        style:
+                        theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        email,
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _mostrarDialogoEditarNombre,
+                          icon: const Icon(Icons.edit),
+                          label: const Text('Editar nombre'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF6A1B9A),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed: () => _cerrarSesion(context),
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          onPressed: () => _cerrarSesion(context),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            backgroundColor: const Color(0xFF6A1B9A),
                           ),
-                          backgroundColor: const Color(0xFF6A1B9A),
-                        ),
-                        child: const Text(
-                          'Cerrar sesión',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          child: const Text(
+                            'Cerrar sesión',
+                            style:
+                            TextStyle(fontSize: 16, color: Colors.white),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

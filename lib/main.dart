@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'services/spotify_api.dart';
 import 'login.dart';
 import 'navegacion.dart';
+import 'package:music_player_tutorial/SplashScreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,15 +28,40 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool _showSplash = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _showSplash = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Tu App',
       theme: ThemeData.dark(),
-      home: StreamBuilder<User?>(
+      home: _showSplash
+          ? SplashScreen(
+        onFinish: () {
+          setState(() {
+            _showSplash = false;
+          });
+        },
+      )
+          : StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
